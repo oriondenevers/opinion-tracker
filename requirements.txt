@@ -1,1 +1,4 @@
-python-dotenv\nrequests\nopenai\npyyaml
+python-dotenv
+requests
+openai
+pyyaml
