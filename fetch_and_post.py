@@ -1,7 +1,7 @@
 # fetch_and_post.py
 """
 Pull yesterday-to-today concurring & dissenting opinions from CourtListener
-and drop stub summaries into _posts/  (ready for Jekyll/GitHub Pages).
+and drop stub summaries into _posts/  (ready for GitHub Pages).
 """
 
 import os
@@ -9,22 +9,20 @@ import datetime
 import textwrap
 import requests
 import yaml
-from dotenv import load_dotenv
-
-load_dotenv()  # lets the script also run inside Codespaces
 
 # --- Configuration ---------------------------------------------------------
 
 CL_API = "https://www.courtlistener.com/api/rest/v3/opinions/"
 YESTERDAY = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 
-# Use the secret if present, otherwise fall back to a hard-coded, polite header
-USER_AGENT = os.getenv(
-    "USER_AGENT",
-    "OpinionTrackerBot/0.1 (+https://github.com/oriondenevers/opinion-tracker; contact oriondenevers@gmail.com)",
-)
-
-HEADERS = {"User-Agent": USER_AGENT}
+# 🔒 HARD-WIRED User-Agent that CourtListener will accept
+HEADERS = {
+    "User-Agent": (
+        "OpinionTrackerBot/0.1 "
+        "(https://github.com/oriondenevers/opinion-tracker; "
+        "mailto:oriondenevers@gmail.com)"
+    )
+}
 
 PARAMS = {
     "type": "concurring,dissenting",
@@ -38,22 +36,14 @@ PARAMS = {
 
 def grab():
     """Return today’s list of opinion JSON objects (or empty list)."""
+    print("• Using header:", HEADERS)      # 👀  shows up in the Actions log
     r = requests.get(CL_API, params=PARAMS, headers=HEADERS, timeout=30)
-    if r.status_code == 403:
-        raise SystemExit(
-            "CourtListener refused the request (403). "
-            "Double-check that USER_AGENT is a descriptive string "
-            "and *not* the default."
-        )
-    r.raise_for_status()
+    r.raise_for_status()                   # will raise if still blocked
     return r.json().get("results", [])
 
 
 def summarize(prompt: str) -> str:
-    """
-    BEGINNER-safe stub: just returns the first 200 characters.
-    Later you can drop real OpenAI code in here.
-    """
+    """BEGINNER stub: first 200 chars."""
     return textwrap.shorten(prompt, 200, " […]")
 
 
