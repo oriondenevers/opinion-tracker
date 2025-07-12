@@ -1,21 +1,34 @@
+# .github/workflows/fetch.yml
 name: Fetch new opinions
 
+# Click “Run workflow” by hand any time.
 on:
-  workflow_dispatch:         # lets you press “Run workflow”
+  workflow_dispatch:
 
+# Expose your secret header text to the job
 env:
-  USER_AGENT: ${{ secrets.USER_AGENT }}   # (only this one line under env)
+  USER_AGENT: ${{ secrets.USER_AGENT }}
 
 jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: '3.11'}
-      - run: pip install -r requirements.txt
-      - run: python fetch_and_post.py
-      - run: |
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python libraries
+        run: pip install -r requirements.txt
+
+      - name: Fetch and create posts
+        run: python fetch_and_post.py
+
+      - name: Commit & push any new posts
+        run: |
           git config user.email "bot@users.noreply.github.com"
           git config user.name  "Opinion-Bot"
           git add _posts || true
