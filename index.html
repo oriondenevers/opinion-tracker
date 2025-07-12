@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head>
+  <meta charset="utf-8"><title>Opinion Tracker</title>
+</head><body>
+<h1>Recent concurrences &amp; dissents</h1>
+{% for p in site.posts %}
+<article>
+  <h2><a href="{{ p.link }}">{{ p.title }}</a></h2>
+  <p>{{ p.content }}</p><hr>
+</article>
+{% endfor %}
+</body></html>
