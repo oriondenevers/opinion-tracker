@@ -17,10 +17,7 @@ YESTERDAY = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 
 # 🔒 HARD-WIRED User-Agent that CourtListener will accept
 HEADERS = {
-    "User-Agent": (
-        "OpinionTrackerBot/0.1 "
-        "(https://github.com/oriondenevers/opinion-tracker; "
-        "mailto:oriondenevers@gmail.com)"
+    "User-Agent": "OpinionTrackerBot/0.1 (mailto:oriondenevers@gmail.com)"
     )
 }
 
